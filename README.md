@@ -45,7 +45,7 @@ El fichero JSON de configuración para la conexión con Sonar (ej: **./config/so
   "sonar-site": "elwillie",
   "sonar-protocol": "http",
   "sonar-domain-name": "sonar.willie.lan",
-  "sonar-token": "squ_0800c3b9f720aa1de9284025bbda13adb49920b7"
+  "sonar-token": "squ_0800c3b9f720aa1aa9284025bbda13adb49920b7"
 }
 ```
 
