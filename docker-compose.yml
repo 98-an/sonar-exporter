@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  atlassian-exporter:
+    image: sonar-exporter
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./app/export:/usr/src/app/export
+    command: >
+      bash -c "python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_users
+      && python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_groups_and_members
+      && python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_with_metrics"

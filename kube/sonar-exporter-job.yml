@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sonar-exporter
+  namespace: exporter
+spec:
+  template:
+    spec:
+      containers:
+      - name: sonar-exporter-sonar-users
+        image: localhost:5000/sonar-exporter
+        command: ["python", "sonar-exporter.py", "--configfile=sonar_conn_elwillie.json", "--action=export_all_sonar_users"]
+        volumeMounts:
+        - name: sonar-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: sonar-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: sonar-exporter-sonar-groups
+        image: localhost:5000/sonar-exporter
+        command: ["python", "sonar-exporter.py", "--configfile=sonar_conn_elwillie.json", "--action=export_all_sonar_groups_and_members"]
+        volumeMounts:
+        - name: sonar-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: sonar-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: sonar-exporter-sonar-projects
+        image: localhost:5000/sonar-exporter
+        command: ["python", "sonar-exporter.py", "--configfile=sonar_conn_elwillie.json", "--action=export_all_sonar_projects_with_metrics"]
+        volumeMounts:
+        - name: sonar-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: sonar-exporter-vol
+          mountPath: /usr/src/app/export
+      volumes:
+      - name: sonar-exporter-conf
+        configMap:
+          name: sonar-exporter-conf
+      - name: sonar-exporter-vol
+        persistentVolumeClaim:
+          claimName: sonar-exporter-pvc
+      restartPolicy: Never

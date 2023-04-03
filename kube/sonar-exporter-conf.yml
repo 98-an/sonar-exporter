@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonar-exporter-conf
+  namespace: exporter
+data:
+  sonar_conn_elwillie.json: |-
+    {
+      "sonar-site": "elwillie",
+      "sonar-protocol": "http",
+      "sonar-domain-name": "sonar.willie.lan",
+      "sonar-token": "squ_0800c3b9f720da1de9284055bbda13adb49920b7"
+    }
