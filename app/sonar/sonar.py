@@ -213,7 +213,7 @@ def export_all_sonar_projects_metrics(sonar_site, sonar_protocol, sonar_domain_n
 
         for project_metric in metrics_list:
             projects_metrics_response = requests.get(
-                '{}://{}/api/measures/component?component={}&metricKeys={}'.format(sonar_protocol, sonar_domain_name, project['project_name'], project_metric),
+                '{}://{}/api/measures/component?component={}&metricKeys={}'.format(sonar_protocol, sonar_domain_name, project['project_key'], project_metric),
                 auth=HTTPBasicAuth(sonar_token, "")
             ).json()
 
