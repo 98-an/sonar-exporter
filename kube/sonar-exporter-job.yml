@@ -31,6 +31,22 @@ spec:
           mountPath: /usr/src/app/config
         - name: sonar-exporter-vol
           mountPath: /usr/src/app/export
+      - name: sonar-exporter-sonar-projects-analyses
+        image: localhost:5000/sonar-exporter
+        command: ["python", "sonar-exporter.py", "--configfile=sonar_conn_elwillie.json", "--action=export_all_sonar_projects_analyses"]
+        volumeMounts:
+        - name: sonar-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: sonar-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: sonar-exporter-sonar-projects-analyses-metrics
+        image: localhost:5000/sonar-exporter
+        command: ["python", "sonar-exporter.py", "--configfile=sonar_conn_elwillie.json", "--action=export_all_sonar_projects_analyses_metrics"]
+        volumeMounts:
+        - name: sonar-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: sonar-exporter-vol
+          mountPath: /usr/src/app/export
       volumes:
       - name: sonar-exporter-conf
         configMap:

@@ -4,7 +4,7 @@
 
 ## Introducción
 
-Sonar Exporter es un proyecto desarrollado con Python y PyCharm, con el objetivo de poder descargar datos de **Sonarqube**, como por ejemplo los datos de usuarios, grupos, proyectos y métricas de proyectos.
+Sonar Exporter es un proyecto desarrollado con Python y PyCharm, con el objetivo de poder descargar datos de **Sonarqube**, como por ejemplo los datos de usuarios, grupos, proyectos y métricas de análisis de proyectos.
 
 Estos datos pueden posteriormente importarse en una base de datos para su análisis, pudiendo utilizarse para diferentes propósitos, como el inventariado o el análisis de la calidad.
 
@@ -28,6 +28,8 @@ Se trata de un programa de línea de comandos en Python, que accede a la API de 
 * Usuarios, Grupos, y pertenencia de Usuarios a Grupos de Sonar
 * Proyectos de Sonar
 * Un conjunto de métricas o medidas predefinida (ej: ncloc, comment_lines, coverage, bugs, code_smells, etc) de los Proyectos
+* Histórico de análisis de cada proyecto de Sonar
+* Un conjunto de métricas, de cada análisis (histórico) de cada proyecto de Sonar
 
 Estos datos se obtienen a través de llamadas a la API de Sonar, para su procesamiento y exportación a ficheros CSV.
 
@@ -59,6 +61,8 @@ A continuación se muestra un ejemplo de uso.
 python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_users
 python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_groups_and_members
 python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_with_metrics
+python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_analyses
+python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_analyses_metrics
 ```
 
 
@@ -181,6 +185,8 @@ docker images
 docker run -v d:/code/elwillie/sonar-exporter/app/export:/usr/src/app/export --rm sonar-exporter python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_users
 docker run -v d:/code/elwillie/sonar-exporter/app/export:/usr/src/app/export --rm sonar-exporter python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_groups_and_members
 docker run -v d:/code/elwillie/sonar-exporter/app/export:/usr/src/app/export --rm sonar-exporter python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_with_metrics
+docker run -v d:/code/elwillie/sonar-exporter/app/export:/usr/src/app/export --rm sonar-exporter python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_analyses
+docker run -v d:/code/elwillie/sonar-exporter/app/export:/usr/src/app/export --rm sonar-exporter python sonar-exporter.py -c sonar_conn_elwillie.json -a export_all_sonar_projects_analyses_metrics
 ```
 
 Podemos arrancar una sesión interativa de Bash sobre un Contendor con nuestra imagen Docker, para de este modo, analizar mejor incidencias y problemas que nos puedan surgir, depurar, etc. Suele ser bastante útil.
@@ -271,6 +277,6 @@ kubectl delete ns exporter
 
 # Contactos
 
-| Nombre        | Posición en el Proyecto | Email                                                |
-|---------------|-------------------------|------------------------------------------------------|
-| **El Willie** | Brownie Manager         | [elwillieES@gmail.com](mailto:elwillieES@gmail.com)  |
+| Nombre        | Email                                                |
+|---------------|------------------------------------------------------|
+| **El Willie** | [elwillieES@gmail.com](mailto:elwillieES@gmail.com)  |

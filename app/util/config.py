@@ -20,11 +20,15 @@ def show_help():
     print("                       export_all_sonar_users")
     print("                       export_all_sonar_groups_and_members")
     print("                       export_all_sonar_projects_with_metrics")
+    print("                       export_all_sonar_projects_analyses")
+    print("                       export_all_sonar_projects_analyses_metrics")
     print()
     print("Examples:")
     print("sonar-exporter.py -c sonar_conn_mysite.json -a export_all_sonar_users")
     print("sonar-exporter.py --configfile sonar_conn_mysite.json --action export_all_sonar_groups_and_members")
     print("sonar-exporter.py --configfile=sonar_conn_mysite.json --action=export_all_sonar_projects_with_metrics")
+    print("sonar-exporter.py --configfile=sonar_conn_mysite.json --action=export_all_sonar_projects_analyses")
+    print("sonar-exporter.py --configfile=sonar_conn_mysite.json --action=export_all_sonar_projects_analyses_metrics")
     print()
     print("More info at: https://github.com/ElWillieES/sonar-exporter")
     print()
@@ -49,7 +53,7 @@ def get_cli_params(cli_args):
         elif opt in ("-a", "--action"):
             action = arg
 
-    if action != "" and action not in ("export_all_sonar_users", "export_all_sonar_groups_and_members", "export_all_sonar_projects_with_metrics"):
+    if action != "" and action not in ("export_all_sonar_users", "export_all_sonar_groups_and_members", "export_all_sonar_projects_with_metrics", "export_all_sonar_projects_analyses", "export_all_sonar_projects_analyses_metrics"):
         print("The action specified as parameter, is not valid.")
         print()
         action = ""

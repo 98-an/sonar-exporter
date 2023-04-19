@@ -3,7 +3,7 @@ import sys
 import datetime
 
 from util.config import (get_sonar_config_file, get_cli_params)
-from sonar.sonar import (export_all_sonar_users, export_all_sonar_groups, export_all_sonar_groups_members, export_all_sonar_projects, export_all_sonar_projects_metrics)
+from sonar.sonar import (export_all_sonar_users, export_all_sonar_groups, export_all_sonar_groups_members, export_all_sonar_projects, export_all_sonar_projects_metrics, export_all_sonar_projects_analyses, export_all_sonar_projects_analyses_metrics)
 
 
 # Press the green button in the gutter to run the script.
@@ -40,3 +40,10 @@ if __name__ == '__main__':
         projects_list = export_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_path + "{}-sonar-projects-{}.csv".format(current_date, sonar_site))
         export_all_sonar_projects_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, projects_list, export_path + "{}-sonar-projects-metrics-{}.csv".format(current_date, sonar_site))
 
+    elif action == "export_all_sonar_projects_analyses":
+        sonar_site, sonar_protocol, sonar_domain_name, sonar_token = get_sonar_config_file(config_path + config_file)
+        export_all_sonar_projects_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_path + "{}-sonar-projects-analyses-{}.csv".format(current_date, sonar_site))
+
+    elif action == "export_all_sonar_projects_analyses_metrics":
+        sonar_site, sonar_protocol, sonar_domain_name, sonar_token = get_sonar_config_file(config_path + config_file)
+        export_all_sonar_projects_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_path + "{}-sonar-analyses-metrics-{}.csv".format(current_date, sonar_site))
