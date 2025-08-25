@@ -1,7 +1,7 @@
 {
   "sonar-site": "mon-sonar",
   "sonar-protocol": "http",
-  "sonar-domain-name": "13.50.222.204",
+  "sonar-domain-name": "13.62.112.162",
   "sonar-port": "9000",
   "sonar-token": "sqa_912071e704727072fc40d4afce87b447438d1b42"
 }
