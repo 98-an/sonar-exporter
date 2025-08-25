@@ -4,16 +4,22 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 
-def export_all_sonar_users(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_filename):
+def build_base_url(protocol, domain, port):
+    return f"{protocol}://{domain}:{port}"
+
+
+def export_all_sonar_users(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, export_filename):
     users_list = []
     users_count = 0
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar users from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     response_page = 1
     while response_page > 0:
         users_response = requests.get(
-            '{}://{}/api/users/search?p={}'.format(sonar_protocol, sonar_domain_name, response_page),
+            f"{base_url}/api/users/search?p={response_page}",
             auth=HTTPBasicAuth(sonar_token, "")
         ).json()
 
@@ -59,16 +65,18 @@ def export_all_sonar_users(sonar_site, sonar_protocol, sonar_domain_name, sonar_
     return users_list
 
 
-def export_all_sonar_groups(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_filename):
+def export_all_sonar_groups(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, export_filename):
     groups_list = []
     groups_count = 0
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar groups from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     response_page = 1
     while response_page > 0:
         groups_response = requests.get(
-            '{}://{}/api/user_groups/search?p={}'.format(sonar_protocol, sonar_domain_name, response_page),
+            f"{base_url}/api/user_groups/search?p={response_page}",
             auth=HTTPBasicAuth(sonar_token, "")
         ).json()
 
@@ -104,8 +112,10 @@ def export_all_sonar_groups(sonar_site, sonar_protocol, sonar_domain_name, sonar
     return groups_list
 
 
-def export_all_sonar_groups_members(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, groups_list, export_filename):
+def export_all_sonar_groups_members(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, groups_list, export_filename):
     groups_members_list = []
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar groups members from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
@@ -116,7 +126,7 @@ def export_all_sonar_groups_members(sonar_site, sonar_protocol, sonar_domain_nam
         response_page = 1
         while response_page > 0:
             group_members_response = requests.get(
-                '{}://{}/api/user_groups/users?name={}&p={}'.format(sonar_protocol, sonar_domain_name, group['group_name'], response_page),
+                f"{base_url}/api/user_groups/users?name={group['group_name']}&p={response_page}",
                 auth=HTTPBasicAuth(sonar_token, "")
             ).json()
 
@@ -151,9 +161,9 @@ def export_all_sonar_groups_members(sonar_site, sonar_protocol, sonar_domain_nam
     )
 
 
-def export_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_filename):
+def export_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, export_filename):
 
-    projects_list = get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token)
+    projects_list = get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port)
 
     export_csv(
         export_filename,
@@ -165,16 +175,18 @@ def export_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, son
     return projects_list
 
 
-def get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token):
+def get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port):
     projects_list = []
     projects_count = 0
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar projects from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     response_page = 1
     while response_page > 0:
         http_response = requests.get(
-            '{}://{}/api/projects/search?p={}'.format(sonar_protocol, sonar_domain_name, response_page),
+            f"{base_url}/api/projects/search?p={response_page}",
             auth=HTTPBasicAuth(sonar_token, "")
         )
 
@@ -200,8 +212,10 @@ def get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_
     return projects_list
 
 
-def export_all_sonar_projects_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, projects_list, export_filename):
+def export_all_sonar_projects_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, projects_list, export_filename):
     metrics_list = ["ncloc", "comment_lines", "coverage", "bugs", "code_smells", "cognitive_complexity", "development_cost", "duplicated_blocks", "duplicated_files", "duplicated_lines", "violations", "critical_violations", "major_violations", "minor_violations", "sqale_rating", "sqale_index", "sqale_debt_ratio", "projects", "alert_status", "reliability_rating", "reliability_remediation_effort", "security_rating", "security_remediation_effort", "security_hotspots", "tests", "test_execution_time", "test_errors", "test_failures", "test_success_density", "skipped_tests", "vulnerabilities"]
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar projects metrics from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
     projects_metrics_list = []
@@ -213,7 +227,7 @@ def export_all_sonar_projects_metrics(sonar_site, sonar_protocol, sonar_domain_n
 
         for project_metric in metrics_list:
             projects_metrics_response = requests.get(
-                '{}://{}/api/measures/component?component={}&metricKeys={}'.format(sonar_protocol, sonar_domain_name, project['project_key'], project_metric),
+                f"{base_url}/api/measures/component?component={project_key}&metricKeys={project_metric}",
                 auth=HTTPBasicAuth(sonar_token, "")
             ).json()
 
@@ -240,14 +254,16 @@ def export_all_sonar_projects_metrics(sonar_site, sonar_protocol, sonar_domain_n
     )
 
 
-def export_all_sonar_projects_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, projects_list, export_filename):
+def export_all_sonar_projects_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, projects_list, export_filename):
 
     projects_analyses_list = []
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar projects Analysis from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     for project in projects_list:
-        project_analyses_list = get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, project['project_key'])
+        project_analyses_list = get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, project['project_key'])
         projects_analyses_list.extend(project_analyses_list)
 
     export_csv(
@@ -260,18 +276,20 @@ def export_all_sonar_projects_analyses(sonar_site, sonar_protocol, sonar_domain_
     return projects_analyses_list
 
 
-def export_all_sonar_projects_analyses_qg(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, projects_list, export_filename):
+def export_all_sonar_projects_analyses_qg(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, projects_list, export_filename):
 
     projects_analyses_list = []
     projects_analyses_list_qg = []
 
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
+
     print('{} - INFO - Reading Sonar Quality Gate status for each Analysis from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     for project in projects_list:
-        project_analyses_list = get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, project['project_key'])
+        project_analyses_list = get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, project['project_key'])
         for project_analyses in project_analyses_list:
             http_response_item = requests.get(
-                '{}://{}/api/qualitygates/project_status?analysisId={}'.format(sonar_protocol, sonar_domain_name, project_analyses['analysis_key']),
+                f"{base_url}/api/qualitygates/project_status?analysisId={project_analyses['analysis_key']}",
                 auth=HTTPBasicAuth(sonar_token, "")
             ).json()
 
@@ -292,9 +310,11 @@ def export_all_sonar_projects_analyses_qg(sonar_site, sonar_protocol, sonar_doma
     return projects_analyses_list
 
 
-def export_all_sonar_projects_quality_gates(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, projects_list, export_filename):
+def export_all_sonar_projects_quality_gates(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, projects_list, export_filename):
 
     projects_quality_gates_list = []
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar projects Quality Gates from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
@@ -302,7 +322,7 @@ def export_all_sonar_projects_quality_gates(sonar_site, sonar_protocol, sonar_do
         project_key = project['project_key']
 
         http_response_item = requests.get(
-            '{}://{}/api/qualitygates/get_by_project?project={}'.format(sonar_protocol, sonar_domain_name, project['project_key']),
+            f"{base_url}/api/qualitygates/get_by_project?project={project_key}",
             auth=HTTPBasicAuth(sonar_token, "")
         ).json()
 
@@ -322,21 +342,22 @@ def export_all_sonar_projects_quality_gates(sonar_site, sonar_protocol, sonar_do
     return projects_quality_gates_list
 
 
-def get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, project_key):
+def get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, project_key):
     project_analyses_list = []
     project_analyses_count = 0
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar project analyses from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     response_page = 1
     while response_page > 0:
         http_response = requests.get(
-            '{}://{}/api/project_analyses/search?project={}&p={}'.format(sonar_protocol, sonar_domain_name, project_key, response_page),
+            f"{base_url}/api/project_analyses/search?project={project_key}&p={response_page}",
             auth=HTTPBasicAuth(sonar_token, "")
         )
 
         for http_response_item in http_response.json()["analyses"]:
-
             project_analyses_list.append({
                 'date': datetime.datetime.now().strftime("%Y%m%d"),
                 'project_key': project_key,
@@ -359,16 +380,18 @@ def get_sonar_project_analyses(sonar_site, sonar_protocol, sonar_domain_name, so
     return project_analyses_list
 
 
-def export_all_sonar_projects_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, export_filename):
+def export_all_sonar_projects_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, export_filename):
 
-    projects_list = get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token)
+    projects_list = get_all_sonar_projects(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port)
 
     projects_analyses_metrics_list = []
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar projects metrics from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), sonar_site))
 
     for project in projects_list:
-        project_analyses_metrics_list = get_sonar_project_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, project['project_key'])
+        project_analyses_metrics_list = get_sonar_project_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, project['project_key'])
         projects_analyses_metrics_list.extend(project_analyses_metrics_list)
 
     export_csv(
@@ -381,19 +404,22 @@ def export_all_sonar_projects_analyses_metrics(sonar_site, sonar_protocol, sonar
     return projects_analyses_metrics_list
 
 
-def get_sonar_project_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, project_key):
+def get_sonar_project_analyses_metrics(sonar_site, sonar_protocol, sonar_domain_name, sonar_token, sonar_port, project_key):
     metrics_list = ["ncloc", "comment_lines", "coverage", "bugs", "code_smells", "cognitive_complexity", "development_cost", "duplicated_blocks", "duplicated_files", "duplicated_lines", "violations", "critical_violations", "major_violations", "minor_violations", "sqale_rating", "sqale_index", "sqale_debt_ratio", "projects", "alert_status", "reliability_rating", "reliability_remediation_effort", "security_rating", "security_remediation_effort", "security_hotspots", "tests", "test_execution_time", "test_errors", "test_failures", "test_success_density", "skipped_tests", "vulnerabilities"]
+
     metrics = ','.join(metrics_list)
 
     project_analyses_metrics_list = []
     project_analyses_metrics_count = 0
+
+    base_url = build_base_url(sonar_protocol, sonar_domain_name, sonar_port)
 
     print('{} - INFO - Reading Sonar project analyses metrics for project key {} from Sonar API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), project_key, sonar_site))
 
     response_page = 1
     while response_page > 0:
         http_response = requests.get(
-            '{}://{}/api/measures/search_history?component={}&p={}&metrics={}'.format(sonar_protocol, sonar_domain_name, project_key, response_page, metrics),
+            f"{base_url}/api/measures/search_history?component={project_key}&p={response_page}&metrics={metrics}",
             auth=HTTPBasicAuth(sonar_token, "")
         )
 
